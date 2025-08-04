@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kekius Token Risk Scanner</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f6fb;
+      padding: 2rem;
+      color: #333;
+    }
+    #scan-widget {
+      max-width: 420px;
+      margin: auto;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    #scan-widget h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    input, button {
+      width: 100%;
+      padding: .7rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+    }
+    button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      padding: .8rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .safe { background: #e6ffed; color: #036b15; }
+    .warning { background: #fff4e5; color: #7a4000; }
+    .danger { background: #ffe6e6; color: #a80000; }
+  </style>
+</head>
+<body>
+  <div id="scan-widget">
+    <h2>🛡️ Token Risk Scanner</h2>
+    <input id="tokenAddr" type="text" placeholder="Paste token address (0x...)" />
+    <button id="scanBtn">Scan Now</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const apiBase = 'https://api.scamtracker.example.com'; // replace with your real endpoint
+
+    document.getElementById('scanBtn').addEventListener('click', async () => {
+      const addr = document.getElementById('tokenAddr').value.trim();
+      const resultBox = document.getElementById('result');
+
+      if (!/^0x[a-fA-F0-9]{40}$/.test(addr)) {
+        resultBox.textContent = 'Invalid token address format.';
+        resultBox.className = 'result danger';
+        return;
+      }
+
+      resultBox.textContent = 'Scanning...';
+      resultBox.className = 'result warning';
+
+      try {
+        const res = await fetch(`${apiBase}/risk/${addr}`);
+        const { score, findings } = await res.json();
+        const status = score > 70 ? 'safe' : score > 30 ? 'warning' : 'danger';
+        resultBox.textContent = `Risk Score: ${score}/100 – ${status.toUpperCase()}`;
+        resultBox.className = `result ${status}`;
+      } catch (e) {
+        resultBox.textContent = 'Error scanning token. Try again later.';
+        resultBox.className = 'result danger';
+      }
+    });
+  </script>
+</body>
+</html>
+1:40 PM 2025-07-23

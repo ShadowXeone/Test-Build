@@ -1,0 +1,102 @@
+/* Basic styles for the scanner widget */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.scanner-widget {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+header h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    color: #1a202c;
+}
+
+header p {
+    margin: 0 0 24px 0;
+    color: #718096;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+}
+
+#tokenAddressInput {
+    flex-grow: 1;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#tokenAddressInput:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+#scanButton {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4299e1;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#scanButton:hover:not(:disabled) {
+    background-color: #3182ce;
+}
+
+#scanButton:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.results-container {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 6px;
+    background-color: #edf2f7;
+    min-height: 24px;
+    line-height: 1.5;
+    transition: all 0.3s ease-in-out;
+    word-wrap: break-word;
+}
+
+/* Result State Classes (applied by JS) */
+.results-container.loading { color: #718096; }
+.results-container.error { background-color: #fed7d7; color: #c53030; font-weight: bold; }
+.results-container.success p { margin: 0 0 8px 0; }
+.results-container.success p:last-child { margin-bottom: 0; }
+.results-container.success { background-color: #c6f6d5; color: #2f855a; font-weight: bold; }
+.results-container.success p {
+    margin: 0;
+}   
+footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 12px;
+    color: #a0aec0;
+}
+/* END OF CSS FILE */

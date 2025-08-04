@@ -1,0 +1,55 @@
+import unittest
+
+from my_crashlog_parser import JvmCrashLogParser
+
+class TestJvmCrashLogParser(unittest.TestCase):
+  def setUp(self):
+    with open("hs_err_pid2660.log", "r", encoding="utf-8") as f:
+      self.log_content = f.read()
+    self.parser = JvmCrashLogParser(self.log_content)
+
+  def test_detects_out_of_memory_error(self):
+    error_type = self.parser.get_error_type()
+    self.assertEqual(error_type, "Out of Memory Error")
+
+  def test_extracts_jvm_version(self):
+    jvm_version = self.parser.get_jvm_version()
+    self.assertEqual(jvm_version, "OpenJDK Runtime Environment (21.0.4) (build 21.0.4+-12508038-b607.1)")
+
+  def test_extracts_heap_size(self):
+    heap_info = self.parser.get_heap_info()
+    self.assertEqual(heap_info['max_capacity_mb'], 2048)
+    self.assertEqual(heap_info['used_mb'], 296027 // 1024)  # Convert K to MB
+
+  def test_extracts_host_info(self):
+    host_info = self.parser.get_host_info()
+    self.assertEqual(host_info['cpu'], "Intel(R) Celeron(R) N4020 CPU @ 1.10GHz")
+    self.assertEqual(host_info['ram_mb'], 3918)
+
+  def test_extracts_command_line(self):
+    cmd = self.parser.get_command_line()
+    self.assertIn("-Xmx2048m", cmd)
+    self.assertIn("org.gradle.launcher.daemon.bootstrap.GradleDaemon", cmd)
+
+  def test_detects_thread_count(self):
+    thread_count = self.parser.get_thread_count()
+    self.assertEqual(thread_count, 48)
+
+  def test_detects_gc_events(self):
+    gc_events = self.parser.get_gc_events()
+    self.assertTrue(any("G1 Evacuation Pause" in event for event in gc_events))
+
+  def test_extracts_metaspace_usage(self):
+    metaspace = self.parser.get_metaspace_info()
+    self.assertGreater(metaspace['used_kb'], 0)
+
+  def test_detects_loaded_classes(self):
+    loaded_classes = self.parser.get_loaded_classes()
+    self.assertIn("com/sun/org/apache/xerces/internal/dom/DeferredCommentImpl", loaded_classes)
+
+  def test_detects_unloaded_classes(self):
+    unloaded_classes = self.parser.get_unloaded_classes()
+    self.assertIn("_BuildScript_", unloaded_classes)
+
+if __name__ == "__main__":
+  unittest.main()
